@@ -46,6 +46,7 @@ load_dotenv()
 
 app = FastAPI(title="Thesis API")
 
+
 db = Neo4jService(os.getenv("NEO4J_URI"), os.getenv("NEO4J_USER"), os.getenv("NEO4J_PASSWORD"))
 
 
