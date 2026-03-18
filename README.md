@@ -1,14 +1,21 @@
 **Overview**
 
 This project is a FastAPI-based backend service that collects user-submitted translation entries and stores them in a Neo4j graph database.
+
 Each entry includes:
+
 City (derived from client IP address)
+
 Original language
+
 Target language
+
 Translation word
 
 The system also provides analytics endpoints to generate reports such as:
+
 Most common cities (location frequency)
+
 Most common translated words
 
 These analytics can be consumed by frontend tools to generate visualizations such as pie charts and bar graphs.
