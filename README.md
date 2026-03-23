@@ -79,6 +79,6 @@ ngrok http 8000
 
 This will create a URL (i.e. https://homey-nonconvective-rueben.ngrok-free.dev ) . Then append /docs to access the Interactive API SwaggerUI 
 
-
+To see the data visualization, navigate to http://127.0.0.1:5500/app/index.html
 
 
