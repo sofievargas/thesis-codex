@@ -76,6 +76,26 @@ class Neo4jService:
                                            date=date.today().isoformat())
         record = result.single()
         return record["u"], record["r"], record["e"]
+    
+    #Order nodes by city
+    def get_location_stats(self):
+        query = """
+        MATCH (e:Entry)
+        RETURN e.city AS city, COUNT(*) AS count
+        ORDER BY count DESC
+        """
+        result = self.driver.session().run(query)
+        return [{"city": r["city"], "count": r["count"]} for r in result]
+    
+    #order nodes by word
+    def get_word_stats(self):
+        query = """
+        MATCH (e:Entry)
+        RETURN e.word AS word, COUNT(*) AS count
+        ORDER BY count DESC
+        """
+        result = self.driver.session().run(query)
+        return [{"word": r["word"], "count": r["count"]} for r in result]
 
 """db = Neo4jService(os.getenv("NEO4J_URI"), os.getenv("NEO4J_USER"), os.getenv("NEO4J_PASSWORD"))
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neo4j Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h2>Most Common Cities</h2>
+<canvas id="cityChart"></canvas>
+
+<h2>Most Common Words</h2>
+<canvas id="wordChart"></canvas>
+
+<script>
+async function loadCityChart() {
+    const res = await fetch("http://127.0.0.1:8000/stats/locations");
+    const data = await res.json();
+
+    const labels = data.map(d => d.city);
+    const values = data.map(d => d.count);
+
+    new Chart(document.getElementById("cityChart"), {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values
+            }]
+        }
+    });
+}
+
+async function loadWordChart() {
+    const res = await fetch("http://127.0.0.1:8000/stats/words");
+    const data = await res.json();
+
+    const labels = data.map(d => d.word);
+    const values = data.map(d => d.count);
+
+    new Chart(document.getElementById("wordChart"), {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values
+            }]
+        }
+    });
+}
+
+loadCityChart();
+loadWordChart();
+</script>
+
+</body>
+</html>

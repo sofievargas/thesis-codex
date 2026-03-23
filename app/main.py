@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from app.database import Neo4jService
 import requests
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.models import UserCreate, EntryCreate
 
@@ -46,6 +47,13 @@ load_dotenv()
 
 app = FastAPI(title="Thesis API")
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 db = Neo4jService(os.getenv("NEO4J_URI"), os.getenv("NEO4J_USER"), os.getenv("NEO4J_PASSWORD"))
 
@@ -54,6 +62,13 @@ db = Neo4jService(os.getenv("NEO4J_URI"), os.getenv("NEO4J_USER"), os.getenv("NE
 def shutdown_event():
     db.close()
 
+@app.get("/stats/locations")
+def get_location_stats():
+    return db.get_location_stats()
+
+@app.get("/stats/words")
+def get_word_stats():
+    return db.get_word_stats()
 
 @app.post("/users")
 def create_user(user: UserCreate):
