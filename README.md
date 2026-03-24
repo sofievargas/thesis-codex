@@ -82,4 +82,13 @@ This will create a URL (i.e. https://homey-nonconvective-rueben.ngrok-free.dev )
 
 To see the data visualization, navigate to http://127.0.0.1:5500/app/index.html
 
+**Example Postman Requests**
+
+<img width="747" height="599" alt="Screenshot 2026-03-24 at 11 09 35 AM" src="https://github.com/user-attachments/assets/e9d6032e-40c8-4d45-9f2e-e53530188d92" />
+
+<img width="836" height="526" alt="Screenshot 2026-03-24 at 11 13 18 AM" src="https://github.com/user-attachments/assets/a93ad0a5-4853-4138-ae19-655a1ad5c6f8" />
+
+<img width="850" height="592" alt="Screenshot 2026-03-24 at 11 15 14 AM" src="https://github.com/user-attachments/assets/cd098ce7-dd79-4cf9-8ed2-a7066fbaf272" />
+
+
 
