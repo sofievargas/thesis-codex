@@ -81,6 +81,7 @@ class Neo4jService:
     def get_location_stats(self):
         query = """
         MATCH (e:Entry)
+        WHERE e.city IS NOT NULL AND toLower(e.city) <> 'unknown'
         RETURN e.city AS city, COUNT(*) AS count
         ORDER BY count DESC
         """
@@ -91,7 +92,7 @@ class Neo4jService:
     def get_word_stats(self):
         query = """
         MATCH (e:Entry)
-        RETURN e.word AS word, COUNT(*) AS count
+        RETURN toLower(e.word) AS word, COUNT(*) AS count
         ORDER BY count DESC
         """
         result = self.driver.session().run(query)

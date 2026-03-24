@@ -12,6 +12,9 @@
 <h2>Most Common Words</h2>
 <canvas id="wordChart"></canvas>
 
+<h2>Most Common Categories</h2>
+<canvas id="classChart"></canvas>
+
 <script>
 async function loadCityChart() {
     const res = await fetch("http://127.0.0.1:8000/stats/locations");
@@ -49,8 +52,27 @@ async function loadWordChart() {
     });
 }
 
+async function loadClassChart() {
+    const res = await fetch("http://127.0.0.1:8000/stats/categories");
+    const data = await res.json();
+
+    const labels = data.map(d => d.class);
+    const values = data.map(d => d.count);
+
+    new Chart(document.getElementById("classChart"), {
+        type: "pie",
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values
+            }]
+        }
+    });
+}
+
 loadCityChart();
 loadWordChart();
+loadClassChart();
 </script>
 
 </body>

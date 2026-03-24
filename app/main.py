@@ -4,9 +4,10 @@ from dotenv import load_dotenv
 from app.database import Neo4jService
 import requests
 from fastapi.middleware.cors import CORSMiddleware
-
+from collections import Counter
 from app.models import UserCreate, EntryCreate
 
+#get IP address
 def get_client_ip(request: Request) -> str:
     forwarded = request.headers.get("x-forwarded-for")
     if forwarded:
@@ -15,6 +16,73 @@ def get_client_ip(request: Request) -> str:
     else:
         ip = request.client.host
     return ip
+
+#get Prescription Category
+def get_rxcui(drug_name):
+    url = "https://rxnav.nlm.nih.gov/REST/rxcui.json"
+    params = {"name": drug_name}
+
+    res = requests.get(url, params=params)
+    data = res.json()
+
+    try:
+        return data["idGroup"]["rxnormId"][0]
+    except:
+        return None
+    
+def get_drug_classes(rxcui):
+    url = f"https://rxnav.nlm.nih.gov/REST/rxclass/class/byRxcui.json"
+    params = {"rxcui": rxcui}
+
+    res = requests.get(url, params=params)
+    data = res.json()
+
+    classes = []
+    try:
+        for item in data["rxclassDrugInfoList"]["rxclassDrugInfo"]:
+            classes.append(item["rxclassMinConceptItem"]["className"])
+    except:
+        pass
+
+    return classes
+
+def get_rxnorm_class_stats(db):
+    words = db.get_word_stats()
+    class_counts = Counter()
+    seen = {}
+
+    for entry in words:
+        word = entry["word"]
+        count = entry["count"]
+
+        if word in seen:
+            classes = seen[word]
+        else:
+            rxcui = get_rxcui(word)
+            classes = get_drug_classes(rxcui) if rxcui else ["Unknown"]
+            seen[word] = classes
+
+        for cls in set(classes):
+            class_counts[cls] += 1
+
+    data = [
+        {"class": k, "count": v}
+        for k, v in class_counts.items()
+    ]
+
+    data = sorted(data, key=lambda x: x["count"], reverse=True)
+    top_n = 6
+    top_classes = data[:top_n]
+    remaining = data[top_n:]
+
+    # sum remaining into "Other"
+    #other_count = sum(item["count"] for item in remaining)
+
+    #if other_count > 0:
+        #top_classes.append({"class": "Other", "count": other_count})
+
+    return top_classes
+
 
 #use IP address to retrieve region
 def geo_lookup(ip: str) -> dict:
@@ -69,6 +137,11 @@ def get_location_stats():
 @app.get("/stats/words")
 def get_word_stats():
     return db.get_word_stats()
+
+
+@app.get("/stats/categories")
+def drug_class_stats():
+    return get_rxnorm_class_stats(db)
 
 @app.post("/users")
 def create_user(user: UserCreate):
