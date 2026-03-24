@@ -80,7 +80,7 @@ ngrok http 8000
 This will create a URL (i.e. https://homey-nonconvective-rueben.ngrok-free.dev ) . Then append /docs to access the Interactive API SwaggerUI 
 
 
-To see the data visualization, navigate to http://127.0.0.1:5500/app/index.html
+To see the data visualization, navigate to the folder that index.html is located and double click. Alternatively, through VS Code right click index.html and select 'Open with Live Server' .
 
 **Example Postman Requests**
 
